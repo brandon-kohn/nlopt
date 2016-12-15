@@ -28,29 +28,29 @@
 
 /*********************************************************************/
 
-#include "praxis.h"
-#include "direct.h"
+#include "../praxis/praxis.h"
+#include "../direct/direct.h"
 
 #ifdef WITH_CXX
-#  include "stogo.h"
+#  include "../stogo/stogo.h"
 #endif
 
-#include "cdirect.h"
+#include "../cdirect/cdirect.h"
 
-#include "luksan.h"
+#include "../luksan/luksan.h"
 
-#include "crs.h"
+#include "../crs/crs.h"
 
-#include "mlsl.h"
-#include "mma.h"
-#include "cobyla.h"
-#include "newuoa.h"
-#include "neldermead.h"
-#include "auglag.h"
-#include "bobyqa.h"
-#include "isres.h"
-#include "esch.h"
-#include "slsqp.h"
+#include "../mlsl/mlsl.h"
+#include "../mma/mma.h"
+#include "../cobyla/cobyla.h"
+#include "../newuoa/newuoa.h"
+#include "../neldermead/neldermead.h"
+#include "../auglag/auglag.h"
+#include "../bobyqa/bobyqa.h"
+#include "../isres/isres.h"
+#include "../esch/esch.h"
+#include "../slsqp/slsqp.h"
 
 /*********************************************************************/
 
