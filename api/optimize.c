@@ -27,7 +27,7 @@
 #include "nlopt-internal.h"
 
 /*********************************************************************/
-
+//! TODO: Get rid of this relative pathing...
 #include "../praxis/praxis.h"
 #include "../direct/direct.h"
 
