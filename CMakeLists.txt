@@ -232,12 +232,13 @@ if (BUILD_SHARED_LIBS)
   add_definitions (-DNLOPT_DLL_EXPORT)
 endif ()
 
-install (FILES ${NLOPT_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR})
+install (FILES ${NLOPT_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR}/nlopt)
 
 set (nlopt_lib nlopt${NLOPT_SUFFIX})
 add_library (${nlopt_lib} ${NLOPT_SOURCES})
 target_link_libraries (${nlopt_lib} ${M_LIBRARY})
 
+set_target_properties (${nlopt_lib} PROPERTIES DEBUG_POSTFIX "d")
 set_target_properties (${nlopt_lib} PROPERTIES SOVERSION 0)
 set_target_properties (${nlopt_lib} PROPERTIES VERSION 0.9.0)
 
