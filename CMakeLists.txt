@@ -240,7 +240,7 @@ target_link_libraries (${nlopt_lib} ${M_LIBRARY})
 
 set_target_properties (${nlopt_lib} PROPERTIES DEBUG_POSTFIX "d")
 set_target_properties (${nlopt_lib} PROPERTIES SOVERSION 0)
-set_target_properties (${nlopt_lib} PROPERTIES VERSION 0.9.0)
+set_target_properties (${nlopt_lib} PROPERTIES VERSION ${NLOPT_VERSION_STRING})
 
 # pass -fPIC in case swig module is built with static library
 if (NOT BUILD_SHARED_LIBS)
