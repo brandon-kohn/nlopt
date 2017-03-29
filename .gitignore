@@ -43,3 +43,6 @@ stogo/prog
 stogo/testros
 stogo/tst
 stogo/tstc
+/NLoptConfig.cmake
+/NLoptConfigVersion.cmake
+/fpclassify.c
