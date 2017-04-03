@@ -234,6 +234,11 @@ endif ()
 
 install (FILES ${NLOPT_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR}/nlopt)
 
+if(MSVC AND NOT "${FORCE_MSVC_RUNTIME}" STREQUAL "")
+    message(STATUS "nlopt: Forcing msvc runtime to ${FORCE_MSVC_RUNTIME}")
+    force_msvc_runtime()
+endif()
+
 set (nlopt_lib nlopt${NLOPT_SUFFIX})
 add_library (${nlopt_lib} ${NLOPT_SOURCES})
 target_link_libraries (${nlopt_lib} ${M_LIBRARY})
