@@ -226,10 +226,10 @@ if (WITH_CXX)
 endif ()
 
 
-if (BUILD_SHARED_LIBS)
-  add_definitions (-DNLOPT_DLL)
-  add_definitions (-DNLOPT_DLL_EXPORT)
-endif ()
+#if (BUILD_SHARED_LIBS)
+#  add_definitions (-DNLOPT_DLL)
+#  add_definitions (-DNLOPT_DLL_EXPORT)
+#endif ()
 
 install (FILES ${NLOPT_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR}/nlopt)
 
@@ -239,23 +239,36 @@ if(MSVC AND NOT "${FORCE_MSVC_RUNTIME}" STREQUAL "")
 endif()
 
 set (nlopt_lib nlopt${NLOPT_SUFFIX})
-add_library (${nlopt_lib} ${NLOPT_SOURCES})
-target_link_libraries (${nlopt_lib} ${M_LIBRARY})
+set (nlopt_static_lib ${nlopt_lib}_static)
+set (nlopt_shared_lib ${nlopt_lib})
 
-set_target_properties (${nlopt_lib} PROPERTIES DEBUG_POSTFIX "d")
-set_target_properties (${nlopt_lib} PROPERTIES SOVERSION 0)
-set_target_properties (${nlopt_lib} PROPERTIES VERSION ${NLOPT_VERSION_STRING})
+add_library (${nlopt_static_lib} STATIC ${NLOPT_SOURCES})
+check_c_compiler_flag (-fPIC HAS_FPIC)
+if(HAS_FPIC)
+    set_target_properties (${nlopt_static_lib} PROPERTIES COMPILE_FLAGS "-fPIC")
+endif()
+target_link_libraries (${nlopt_static_lib} ${M_LIBRARY})
+set_target_properties (${nlopt_static_lib} PROPERTIES DEBUG_POSTFIX "d")
+set_target_properties (${nlopt_static_lib} PROPERTIES SOVERSION 0)
+set_target_properties (${nlopt_static_lib} PROPERTIES VERSION ${NLOPT_VERSION_STRING})
+
+add_library (${nlopt_shared_lib} SHARED ${NLOPT_SOURCES})
+target_compile_definitions(${nlopt_shared_lib} PUBLIC -DNLOPT_DLL)
+target_compile_definitions(${nlopt_shared_lib} PRIVATE -DNLOPT_DLL_EXPORT)
+target_link_libraries (${nlopt_shared_lib} ${M_LIBRARY})
+set_target_properties (${nlopt_shared_lib} PROPERTIES DEBUG_POSTFIX "d")
+set_target_properties (${nlopt_shared_lib} PROPERTIES SOVERSION 0)
+set_target_properties (${nlopt_shared_lib} PROPERTIES VERSION ${NLOPT_VERSION_STRING})
 
 # pass -fPIC in case swig module is built with static library
-if (NOT BUILD_SHARED_LIBS)
-  check_c_compiler_flag (-fPIC HAS_FPIC)
-  if (HAS_FPIC)
-    set (CMAKE_C_FLAGS "-fPIC ${CMAKE_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "-fPIC ${CMAKE_CXX_FLAGS}")
-  endif ()
-endif ()
+#if (NOT BUILD_SHARED_LIBS)
+#  if (HAS_FPIC)
+#    set (CMAKE_C_FLAGS "-fPIC ${CMAKE_C_FLAGS}")
+#    set (CMAKE_CXX_FLAGS "-fPIC ${CMAKE_CXX_FLAGS}")
+#  endif ()
+#endif ()
 
-install ( TARGETS ${nlopt_lib}
+install ( TARGETS ${nlopt_static_lib} ${nlopt_shared_lib}
           EXPORT  NLoptLibraryDepends
           RUNTIME DESTINATION ${RELATIVE_INSTALL_BIN_DIR}
           LIBRARY DESTINATION ${RELATIVE_INSTALL_LIB_DIR}
@@ -323,16 +336,18 @@ set (CPACK_SOURCE_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-${NLOPT_VERSION_STRING
 include (CPack)
 
 # configuration files
-export (TARGETS ${nlopt_lib} FILE ${PROJECT_BINARY_DIR}/NLoptLibraryDepends.cmake)
+export (TARGETS ${nlopt_static_lib} FILE ${PROJECT_BINARY_DIR}/NLoptStaticLibraryDepends.cmake)
+export (TARGETS ${nlopt_shared_lib} FILE ${PROJECT_BINARY_DIR}/NLoptSharedLibraryDepends.cmake)
 
 # Install the export set for use with the install-tree
-install(EXPORT NLoptLibraryDepends
+install(EXPORT NLoptStaticLibraryDepends NLoptSharedLibraryDepends
         DESTINATION ${RELATIVE_INSTALL_CMAKE_DIR}
         COMPONENT Development)
 
 # Create a NLOPTConfig.cmake file for the use from the install tree
 # and install it
-set (NLOPT_LIBRARIES ${nlopt_lib})
+set (NLOPT_STATIC_LIBRARIES ${nlopt_static_lib})
+set (NLOPT_SHARED_LIBRARIES ${nlopt_static_lib})
 
 set (NLOPT_CMAKE_DIR "${INSTALL_CMAKE_DIR}")
 file (RELATIVE_PATH rel_include_dir "${NLOPT_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")

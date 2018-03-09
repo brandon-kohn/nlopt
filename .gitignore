@@ -46,3 +46,4 @@ stogo/tstc
 /NLoptConfig.cmake
 /NLoptConfigVersion.cmake
 /fpclassify.c
+/*.swp
