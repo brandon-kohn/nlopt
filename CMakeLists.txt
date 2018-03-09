@@ -245,7 +245,7 @@ set (nlopt_shared_lib ${nlopt_lib})
 add_library (${nlopt_static_lib} STATIC ${NLOPT_SOURCES})
 check_c_compiler_flag (-fPIC HAS_FPIC)
 if(HAS_FPIC)
-    set_target_properties (${nlopt_static_lib} PROPERTIES COMPILE_FLAGS "-fPIC")
+    target_compile_options(${nlopt_static_lib} PRIVATE "-fPIC")
 endif()
 target_link_libraries (${nlopt_static_lib} ${M_LIBRARY})
 set_target_properties (${nlopt_static_lib} PROPERTIES DEBUG_POSTFIX "d")
@@ -268,8 +268,15 @@ set_target_properties (${nlopt_shared_lib} PROPERTIES VERSION ${NLOPT_VERSION_ST
 #  endif ()
 #endif ()
 
-install ( TARGETS ${nlopt_static_lib} ${nlopt_shared_lib}
-          EXPORT  NLoptLibraryDepends
+install ( TARGETS ${nlopt_static_lib} 
+          EXPORT  NLoptStaticLibraryDepends
+          RUNTIME DESTINATION ${RELATIVE_INSTALL_BIN_DIR}
+          LIBRARY DESTINATION ${RELATIVE_INSTALL_LIB_DIR}
+          ARCHIVE DESTINATION ${RELATIVE_INSTALL_LIB_DIR}
+        )
+
+install ( TARGETS ${nlopt_shared_lib}
+          EXPORT  NLoptSharedLibraryDepends
           RUNTIME DESTINATION ${RELATIVE_INSTALL_BIN_DIR}
           LIBRARY DESTINATION ${RELATIVE_INSTALL_LIB_DIR}
           ARCHIVE DESTINATION ${RELATIVE_INSTALL_LIB_DIR}
@@ -340,9 +347,8 @@ export (TARGETS ${nlopt_static_lib} FILE ${PROJECT_BINARY_DIR}/NLoptStaticLibrar
 export (TARGETS ${nlopt_shared_lib} FILE ${PROJECT_BINARY_DIR}/NLoptSharedLibraryDepends.cmake)
 
 # Install the export set for use with the install-tree
-install(EXPORT NLoptStaticLibraryDepends NLoptSharedLibraryDepends
-        DESTINATION ${RELATIVE_INSTALL_CMAKE_DIR}
-        COMPONENT Development)
+install(EXPORT NLoptStaticLibraryDepends DESTINATION ${RELATIVE_INSTALL_CMAKE_DIR} COMPONENT Development)
+install(EXPORT NLoptSharedLibraryDepends DESTINATION ${RELATIVE_INSTALL_CMAKE_DIR} COMPONENT Development)
 
 # Create a NLOPTConfig.cmake file for the use from the install tree
 # and install it
