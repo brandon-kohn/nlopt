@@ -41,7 +41,7 @@ char    *optarg;                /* argument associated with option */
 
 #define BADCH   (int)'?'
 #define BADARG  (int)':'
-#define EMSG    ""
+#define EMSG    const_cast<char*>("")
 
 /*
 * getopt --
